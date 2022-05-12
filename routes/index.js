@@ -88,40 +88,46 @@ function getActivityLog(req, res, next) {
 }
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', (req, res, next) => {
     res.render('index/index', {
         title: 'Dashboard',
         sockaddress: `${req.protocol}://${req.get('host')}/ui`
     });
 });
 
-router.get('/about', function (req, res, next) {
-    const packageInfo = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'package.json')));
-    res.json({
-        title: packageInfo.description,
-        version: packageInfo.version,
-        author: packageInfo.author.name ? packageInfo.author.name + ' <' + packageInfo.author.email + '>' : packageInfo.author,
-        license: packageInfo.license
-    });
+router.get('/about', (req, res, next) => {
+    let about;
+    if (req.app.about) {
+        about = req.app.about;
+    } else {
+        const packageInfo = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json')));
+        about = {
+            title: packageInfo.description,
+            version: packageInfo.version,
+            author: packageInfo.author.name ? packageInfo.author.name + ' <' + packageInfo.author.email + '>' : packageInfo.author,
+            license: packageInfo.license
+        }
+    }
+    res.json(about);
 });
 
-router.get('/activity', function (req, res, next) {
+router.get('/activity', (req, res, next) => {
     getActivity(req, res, next);
 });
 
-router.get('/activity/:page', function (req, res, next) {
+router.get('/activity/:page', (req, res, next) => {
     getActivity(req, res, next);
 });
 
-router.get('/log/:term', function (req, res, next) {
+router.get('/log/:term', (req, res, next) => {
     getLog(req, res, next);
 });
 
-router.get('/activity-log', function (req, res, next) {
+router.get('/activity-log', (req, res, next) => {
     getActivityLog(req, res, next);
 });
 
-router.get('/client', function (req, res, next) {
+router.get('/client', (req, res, next) => {
     const result = [];
     const term = req.app.term;
     var nr = 0;
@@ -137,8 +143,8 @@ router.get('/client', function (req, res, next) {
     res.json({count: result.length, items: result});
 });
 
-router.post('/:term/at', function (req, res, next) {
-    const result = { success: false };
+router.post('/:term/at', (req, res, next) => {
+    const result = {success: false};
     if (req.params.term && req.body.command) {
         const term = req.app.term;
         const terminal = term.get(req.params.term);

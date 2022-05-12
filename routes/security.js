@@ -36,7 +36,7 @@ router.get('/login', function (req, res, next) {
     res.render('security/login', {redirect: redir ? redir : '/'});
 });
 
-router.post('/login', function (req, res, next) {
+router.post('/login', (req, res, next) => {
     const result = {
         success: false
     }
@@ -50,7 +50,7 @@ router.post('/login', function (req, res, next) {
     res.json(result);
 });
 
-router.get('/logout', function (req, res, next) {
+router.get('/logout', (req, res, next) => {
     if (req.user) {
         req.user.logout();
     }
