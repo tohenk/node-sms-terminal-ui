@@ -15,7 +15,7 @@
         }
     }
 } %>
-<% if(user.authenticated) {
+<% if (user.authenticated) {
     Object.assign(menus.tasks.items, {
         divider1: {
             type: 'divider'
@@ -38,9 +38,9 @@
   .addMiddle(`
 $.tasks = {
     about: function() {
-        var self = this;
-        var f = function() {
-            var msg = $.util.template('<p>%TITLE% version %VERSION%<br/>' +
+        const self = this;
+        const f = function() {
+            const msg = $.util.template('<p>%TITLE% version %VERSION%<br/>' +
                 '(c) %AUTHOR%<br/>' +
                 'Licensed under %LICENSE%</p>', {
                 TITLE: self.aboutInfo.title,
@@ -51,26 +51,27 @@ $.tasks = {
             $.ntdlg.message('task-about', 'About', msg, $.ntdlg.ICON_INFO);
         }
         if (!self.aboutInfo) {
-            $.get('/about').then(function(json) {
-                self.aboutInfo = json;
-                f();
-            });
+            $.get('/about')
+                .done(function(json) {
+                    self.aboutInfo = json;
+                    f();
+                });
         } else {
             f();
         }
     },
     sendAt: function() {
-        var self = this;
+        const self = this;
         if ($.term) {
-            var termlist = function() {
-                var result = [];
-                for (var term in $.term.terms) {
+            const termlist = function() {
+                const result = [];
+                for (let term in $.term.terms) {
                     result.push($.util.template('<option value="%VALUE%">%LABEL%</option>',
                         {VALUE: term, LABEL: term}));
                 }
                 return result.join('');
             }
-            var message =
+            const message =
                 '<form class="ui container form">' +
                     '<div class="field">' +
                         '<label>Select terminal:</label>' +
@@ -87,13 +88,13 @@ $.tasks = {
                         '<div class="ui segment feedback" style="height: 10rem; overflow-y: auto;"></div>' +
                     '</div>' +
                 '</form>';
-            var dlg = $.ntdlg.dialog('sendatdlg', 'Send AT command', message, 'desktop icon', {
+            const dlg = $.ntdlg.dialog('sendatdlg', 'Send AT command', message, 'desktop icon', {
                 'send': {
                     type: 'green approve',
                     caption: '<i class="check icon"></i>Send',
                     handler: function() {
-                        var term = dlg.find('select[name="terminal"]');
-                        var cmd = dlg.find('input[name="command"]');
+                        const term = dlg.find('select[name="terminal"]');
+                        const cmd = dlg.find('input[name="command"]');
                         if (term.val() == null) {
                             term.focus();
                             return false;
@@ -102,24 +103,24 @@ $.tasks = {
                             cmd.focus();
                             return false;
                         }
-                        $.post('/TERM/at'.replace(/TERM/, term.val()), {command: cmd.val()}).then(function(json) {
-                            console.log(json);
-                            var responses = [];
-                            responses.push($.util.template('%TERM%&gt; <strong>%CMD%</strong> <i class="%ICON% icon"></i>', {
-                                TERM: term.val(),
-                                CMD: cmd.val(),
-                                ICON: json.success ? 'green check' : 'red times'
-                            }));
-                            if (json.data) {
-                                responses.push($.util.template('<pre>%DATA%</pre>', {
-                                    STATE: json.success ? 'green' : 'red',
-                                    DATA: json.data
+                        $.post('/TERM/at'.replace(/TERM/, term.val()), {command: cmd.val()})
+                            .done(function(json) {
+                                const responses = [];
+                                responses.push($.util.template('%TERM%&gt; <strong>%CMD%</strong> <i class="%ICON% icon"></i>', {
+                                    TERM: term.val(),
+                                    CMD: cmd.val(),
+                                    ICON: json.success ? 'green check' : 'red times'
                                 }));
-                            }
-                            dlg.find('.feedback').append($.util.template('<p class="small">%CONTENT%</p>', {
-                                CONTENT: responses.join('')
-                            }));
-                        });
+                                if (json.data) {
+                                    responses.push($.util.template('<pre>%DATA%</pre>', {
+                                        STATE: json.success ? 'green' : 'red',
+                                        DATA: json.data
+                                    }));
+                                }
+                                dlg.find('.feedback').append($.util.template('<p class="small">%CONTENT%</p>', {
+                                    CONTENT: responses.join('')
+                                }));
+                            });
                         return false;
                     }
                 },
@@ -137,7 +138,7 @@ $.tasks = {
         }
     },
     init: function() {
-        var self = this;
+        const self = this;
         $('.menu-about').on('click', function(e) {
             e.preventDefault();
             self.about();

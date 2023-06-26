@@ -36,7 +36,7 @@ function getActivity(req, res, next) {
     stor.Activity.count().then(count => {
         result.count = count;
         result.items = [];
-        var offset = (page - 1) * pageSize;
+        let offset = (page - 1) * pageSize;
         stor.Activity.findAll({
             order: [['time', 'DESC']],
             offset: offset,
@@ -57,7 +57,7 @@ function getActivity(req, res, next) {
                 });
             });
             // create pagination
-            result.pages = res.pager(result.count, pageSize, page);
+            result.pages = req.app.locals.pager(result.count, pageSize, page);
             // send content
             res.json(result);
         });
@@ -130,7 +130,7 @@ router.get('/activity-log', (req, res, next) => {
 router.get('/client', (req, res, next) => {
     const result = [];
     const term = req.app.term;
-    var nr = 0;
+    let nr = 0;
     term.clients.forEach(socket => {
         const info = {
             nr: ++nr,
