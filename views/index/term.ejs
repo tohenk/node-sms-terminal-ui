@@ -1,18 +1,18 @@
-<% ports = term.getTerminals(true) %>
+<%_ ports = term.getTerminals(true) -%>
 <div class="ui stackable grid">
   <div class="row">
     <div class="four wide column">
       <div class="ui fluid vertical pointing menu">
         <%_ ports.forEach((port) => { -%>
-        <%_ if(gsm = term.get(port)) { %>
+        <%_ if (gsm = term.get(port)) { -%>
         <a href="#" class="item" data-port="<%= gsm.name %>"><i class="desktop icon"></i> <%= gsm.name %></a>
         <%_ } -%>
-        <%_ }); -%>
+        <%_ }) -%>
       </div>
     </div>
     <div class="twelve wide column">
       <%_ ports.forEach((port) => { -%>
-      <%_ if(gsm = term.get(port)) { %>
+      <%_ if (gsm = term.get(port)) { -%>
       <div class="ui form gsm <%= gsm.name %>" style="display: none;">
         <div class="ui two column stackable grid">
           <div class="column">
@@ -66,12 +66,12 @@
         </div>
       </div>
       <%_ } -%>
-      <%_ }); -%>
+      <%_ }) -%>
     </div>
   </div>
 </div>
-<% items = JSON.stringify(ports, null, 4) %>
-<% script.create('JQuery')
+<%_ items = JSON.stringify(ports, null, 4) -%>
+<%_ script.create('JQuery')
   .add(`
 $.term.init(${items});
 $('a[data-port]').on('click', function(e) {
@@ -82,4 +82,4 @@ $('a[data-port]').on('click', function(e) {
     $('.ui.form.gsm').hide();
     $('.ui.form.gsm.' + a.attr('data-port')).show();
 }).filter(':first').click();
-`); %>
+`) -%>

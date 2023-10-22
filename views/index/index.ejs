@@ -2,26 +2,26 @@
   <a class="active item" data-tab="activity">Activity</a>
   <a class="item" data-tab="log">Logs</a>
   <a class="item" data-tab="client">Clients <span class="ui tiny label">0</span></a>
-  <%_ if((terms = term.getTerminals(true)) && terms.length) { -%>
+  <%_ if ((terms = term.getTerminals(true)) && terms.length) { -%>
   <a class="item" data-tab="port">Ports <span class="ui tiny label"><%= terms.length %></span></a>
   <%_ } -%>
 </div>
 <div class="ui bottom attached active tab segment" data-tab="activity">
-  <%- include('activity') %>
+<%- include('activity') -%>
 </div>
 <div class="ui bottom attached tab segment" data-tab="log">
-  <%- include('log') %>
+<%- include('log') -%>
 </div>
 <div class="ui bottom attached tab segment" data-tab="client">
-  <%- include('client') %>
+<%- include('client') -%>
 </div>
-<%- include('termhandler') %>
-<% if(terms.length) { -%>
+<%- include('termhandler') -%>
+<%_ if (terms.length) { -%>
 <div class="ui bottom attached tab segment" data-tab="port">
-  <%- include('term') %>
+<%- include('term') -%>
 </div>
-<% } -%>
-<% script.create('JQuery')
+<%_ } -%>
+<%_ script.create('JQuery')
   .useDependencies(['SocketIO'])
   .add(`
 // socket handler
@@ -63,4 +63,4 @@ $.activity.load();
 $.log.load();
 $.client.load();
 $.uiCon.init();
-`); %>
+`) -%>
