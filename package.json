@@ -1,6 +1,6 @@
 {
   "name": "@ntlab/sms-terminal-ui",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "SMS Terminal Web Interface",
   "main": "index.js",
   "scripts": {

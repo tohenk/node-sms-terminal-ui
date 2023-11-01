@@ -25,8 +25,16 @@ $.activity = $.loader($('div[data-tab="activity"] table'), {
             '<td>' + (item.address ? item.address : '') +
                 (item.origin ? '<div><div class="ui mini grey label"><i class="phone icon"></i>' + item.origin + '</div></div>' : '') + '</td>' +
             '<td>' + (item.data ? item.data : '') + '</td>' +
-            '<td>' + item.status + '</td>' +
+            '<td>' + this.formatStatus(item.status) + '</td>' +
             '</tr>');
     }
 });
+$.activity.formatStatus = function(status) {
+    switch (status) {
+        case 0:
+            return '<i class="red times icon"></i>';
+        case 1:
+            return '<i class="green check icon"></i>';
+    }
+}
 `) -%>
