@@ -15,11 +15,14 @@ $.term = {
     },
     addLog: function(name, data) {
         const self = this;
-        if (data.time > self.terms[name].time) {
+        if (data.time >= self.terms[name].time) {
             const log = $(self.terms[name].log);
-            log.append(data.message + '\\r\\n');
-            log.scrollTop(log[0].scrollHeight - log.height());
-            self.terms[name].time = data.time;
+            const message = data.message + '\\r\\n';
+            if (log.text().substr(-message.length) !== message) {
+                log.append(message);
+                log.scrollTop(log[0].scrollHeight - log.height());
+                self.terms[name].time = data.time;
+            }
         }
     },
     init: function(ports) {
