@@ -44,9 +44,8 @@ function getActivity(req, res, next) {
         })
         .then(results => {
             results.forEach(activity => {
-                offset++;
                 result.items.push({
-                    nr: offset,
+                    nr: ++offset,
                     hash: activity.hash,
                     origin: activity.imsi,
                     type: activity.type,
@@ -90,7 +89,6 @@ function getActivityLog(req, res, next) {
 /* GET home page. */
 router.get('/', (req, res, next) => {
     res.render('index/index', {
-        title: 'Dashboard',
         sockaddress: `${req.protocol}://${req.get('host')}/ui`
     });
 });
