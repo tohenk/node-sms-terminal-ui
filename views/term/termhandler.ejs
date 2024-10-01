@@ -1,10 +1,10 @@
 <%_ script.create('JQuery')
-  .add(`
+  .addMiddle(`
 $.term = {
     terms: {},
     getLog: function(name) {
         const self = this;
-        $.get('/log/' + name)
+        $.get('${route('Term', {name: 'log', term: 'TERM'})}'.replace(/TERM/, name))
             .done(function(json) {
                 if (json.logs) {
                     const log = $(self.terms[name].log);

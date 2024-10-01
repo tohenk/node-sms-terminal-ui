@@ -1,11 +1,11 @@
 <div class="ui form">
-  <textarea class="activity" rows=30 readonly></textarea>
+  <textarea class="activity" rows="30" readonly></textarea>
 </div>
 <%_ script.create('JQuery')
-  .add(`
+  .addMiddle(`
 $.log = {
     el: $('textarea.activity'),
-    url: '/activity-log',
+    url: '${route('Term', {name: 'activity-log'})}',
     load: function() {
         const self = this;
         $.get(self.url)
@@ -28,4 +28,7 @@ $.log = {
         }
     }
 }
+`)
+  .addLast(`
+$.log.load();
 `) -%>

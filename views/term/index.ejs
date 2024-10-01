@@ -1,9 +1,9 @@
 <div class="ui stackable top attached tabular menu">
-  <a class="active item" data-tab="activity">Activity</a>
-  <a class="item" data-tab="log">Logs</a>
-  <a class="item" data-tab="client">Clients <span class="ui tiny label">0</span></a>
+  <a class="active item" data-tab="activity"><%= _('Activity') %></a>
+  <a class="item" data-tab="log"><%= _('Logs') %></a>
+  <a class="item" data-tab="client"><%= _('Clients') %> <span class="ui tiny label">0</span></a>
   <%_ if ((terms = term.getTerminals(true)) && terms.length) { -%>
-  <a class="item" data-tab="port">Ports <span class="ui tiny label"><%= terms.length %></span></a>
+  <a class="item" data-tab="port"><%= _('Ports') %> <span class="ui tiny label"><%= terms.length %></span></a>
   <%_ } -%>
 </div>
 <div class="ui bottom attached active tab segment" data-tab="activity">
@@ -23,8 +23,7 @@
 <%_ } -%>
 <%_ script.create('JQuery')
   .useDependencies(['SocketIO'])
-  .add(`
-// socket handler
+  .addMiddle(`
 $.uiCon = {
     connected: false,
     keepalive: true,
@@ -57,10 +56,8 @@ $.uiCon = {
         });
     }
 }
-// initialize
+`)
+  .addLast(`
 $('.menu .item').tab();
-$.activity.load();
-$.log.load();
-$.client.load();
 $.uiCon.init();
 `) -%>

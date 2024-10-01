@@ -2,15 +2,15 @@
     branding: {
         type: 'brand',
         title: apptitle,
-        logo: '/images/logo.png',
-        url: '/'
+        logo: path('/images/logo.png'),
+        url: path('/')
     },
     tasks: {
-        title: 'Tasks',
+        title: _('Tasks'),
         class: 'right floated',
         items: {
             about: {
-                title: 'About'
+                title: _('About')
             }
         }
     }
@@ -21,14 +21,14 @@
             type: 'divider'
         },
         sendat: {
-            title: 'Send AT command'
+            title: _('Send AT command')
         },
         divider2: {
             type: 'divider'
         },
         logout: {
-            title: 'Logout',
-            url: '/logout'
+            title: _('Logout'),
+            url: route('Security', {name: 'logout'})
         }
     });
 } -%>
@@ -48,10 +48,10 @@ $.tasks = {
                 AUTHOR: $('<div>').text(self.aboutInfo.author).html(),
                 LICENSE: self.aboutInfo.license
             });
-            $.ntdlg.message('task-about', 'About', msg, $.ntdlg.ICON_INFO);
+            $.ntdlg.message('task-about', '${_('About')}', msg, $.ntdlg.ICON_INFO);
         }
         if (!self.aboutInfo) {
-            $.get('/about')
+            $.get('${route('Term', {name: 'about'})}')
                 .done(function(json) {
                     self.aboutInfo = json;
                     f();
@@ -80,30 +80,30 @@ $.tasks = {
                         '</select>' +
                     '</div>' +
                     '<div class="field">' +
-                        '<label>Command:</label>' +
+                        '<label>${_('Command:')}</label>' +
                         '<input type="text" name="command" value="">' +
                     '</div>' +
                     '<div class="field">' +
-                        '<label>Feedback:</label>' +
+                        '<label>${_('Feedback:')}</label>' +
                         '<div class="ui segment feedback" style="height: 10rem; overflow-y: auto;"></div>' +
                     '</div>' +
                 '</form>';
-            const dlg = $.ntdlg.dialog('sendatdlg', 'Send AT command', message, 'desktop icon', {
-                'send': {
+            const dlg = $.ntdlg.dialog('sendatdlg', '${_('Send AT command')}', message, 'desktop icon', {
+                send: {
                     type: 'green approve',
-                    caption: '<i class="check icon"></i>Send',
+                    caption: '<i class="check icon"></i>${_('Send')}',
                     handler: function() {
                         const term = dlg.find('select[name="terminal"]');
                         const cmd = dlg.find('input[name="command"]');
-                        if (term.val() == null) {
+                        if (term.val() === null) {
                             term.focus();
                             return false;
                         }
-                        if (cmd.val() == '') {
+                        if (cmd.val() === '') {
                             cmd.focus();
                             return false;
                         }
-                        $.post('/TERM/at'.replace(/TERM/, term.val()), {command: cmd.val()})
+                        $.post('${route('Term', {name: 'at', term: 'TERM'})}'.replace(/TERM/, term.val()), {command: cmd.val()})
                             .done(function(json) {
                                 const responses = [];
                                 responses.push($.util.template('%TERM%&gt; <strong>%CMD%</strong> <i class="%ICON% icon"></i>', {
@@ -124,9 +124,9 @@ $.tasks = {
                         return false;
                     }
                 },
-                'close': {
+                close: {
                     type: 'red deny',
-                    caption: '<i class="times icon"></i>Close'
+                    caption: '<i class="times icon"></i>${_('Close')}'
                 }
             });
             dlg.find('select.dropdown').dropdown();
