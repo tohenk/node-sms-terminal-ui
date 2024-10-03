@@ -38,7 +38,7 @@ class TermController extends Controller
             }
             res.render('term/index', {
                 socket: {
-                    url: req.getUri('/ui'),
+                    url: req.getUri({path: '/ui', noproto: true}),
                     options: socketOptions
                 }
             });
