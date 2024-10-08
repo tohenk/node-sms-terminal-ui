@@ -18,8 +18,8 @@ $.stk = {
             items.push($.util.template(
                 '    <div class="field">\\n' +
                 '      <div class="ui radio">\\n' +
-                '         <input type="radio" name="menu" tabindex="0" class="hidden" value="%ID%">\\n' +
-                '         <label>%TITLE%</label>\\n' +
+                '         <input id="stk-menu-%ID%" type="radio" name="menu" tabindex="0" class="hidden" value="%ID%">\\n' +
+                '         <label for="stk-menu-%ID%">%TITLE%</label>\\n' +
                 '      </div>\\n' +
                 '    </div>', {ID: item.id, TITLE: item.title}
             ));
@@ -27,7 +27,7 @@ $.stk = {
         const message =
             '<form class="ui container form">\\n' +
             '  <div class="grouped fields">\\n' +
-            '    <label for="menu">${_('Select menu:')}</label>\\n' +
+            '    <label>${_('Select menu:')}</label>\\n' +
             '    ' + items.join('\\n') + '\\n' +
             '  </div>\\n' +
             '</form>';
