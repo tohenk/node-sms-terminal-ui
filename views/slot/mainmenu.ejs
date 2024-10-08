@@ -20,6 +20,9 @@
         divider1: {
             type: 'divider'
         },
+        stk: {
+            title: _('SIM Toolkit')
+        },
         sendat: {
             title: _('Send AT command')
         },
@@ -34,20 +37,22 @@
 } -%>
 <%- menu(menus, {mainmenu: true, indentation: 2}) %>
 <%_ script.create('JQuery')
-  .useDependencies(['JQuery/Util', 'SemanticUI/Dialog', 'SemanticUI/Dialog/Message'])
+  .useDependencies(['JQuery/Util', 'SemanticUI/Notification', 'SemanticUI/Dialog', 'SemanticUI/Dialog/Message'])
   .addMiddle(`
 $.tasks = {
     about: function() {
         const self = this;
         const f = function() {
-            const msg = $.util.template('<p>%TITLE% version %VERSION%<br/>' +
-                '(c) %AUTHOR%<br/>' +
+            const msg = $.util.template(
+                '<p>%TITLE% version %VERSION%<br/>\\n' +
+                '(c) %AUTHOR%<br/>\\n' +
                 'Licensed under %LICENSE%</p>', {
-                TITLE: self.aboutInfo.title,
-                VERSION: self.aboutInfo.version,
-                AUTHOR: $('<div>').text(self.aboutInfo.author).html(),
-                LICENSE: self.aboutInfo.license
-            });
+                    TITLE: self.aboutInfo.title,
+                    VERSION: self.aboutInfo.version,
+                    AUTHOR: $('<div>').text(self.aboutInfo.author).html(),
+                    LICENSE: self.aboutInfo.license
+                }
+            );
             $.ntdlg.message('task-about', '${_('About')}', msg, $.ntdlg.ICON_INFO);
         }
         if (!self.aboutInfo) {
@@ -60,35 +65,85 @@ $.tasks = {
             f();
         }
     },
+    notifyResult: function(result) {
+        if (result.success) {
+            $.notify('${_('Operation successfully submitted!')}', 'success');
+        } else {
+            $.notify('${_('Operation failed!')}', 'error');
+        }
+    },
+    termList: function() {
+        const result = [];
+        if ($.term) {
+            for (const term in $.term.terms) {
+                result.push($.util.template('      <option value="%VALUE%">%LABEL%</option>',
+                    {VALUE: term, LABEL: term}));
+            }
+        }
+        return result.join('\\n');
+    },
+    stk: function() {
+        const self = this;
+        if ($.term) {
+            const message =
+                '<form class="ui container form">\\n' +
+                '  <div class="field">\\n' +
+                '    <label>Select terminal:</label>\\n' +
+                '    <select name="terminal" class="ui dropdown">\\n' +
+                '      ' + self.termList() + '\\n' +
+                '    </select>\\n' +
+                '  </div>\\n' +
+                '</form>';
+            const dlg = $.ntdlg.dialog('stk-dlg', '${_('SIM Toolkit')}', message, 'desktop icon', {
+                send: {
+                    type: 'green approve',
+                    caption: '<i class="check icon"></i>${_('Ok')}',
+                    handler: function() {
+                        const term = dlg.find('select[name="terminal"]');
+                        if (term.val() === null) {
+                            term.focus();
+                            return false;
+                        }
+                        $.post('${route('Term', {name: 'stk', term: 'TERM', cmd: 'show'})}'.replace(/TERM/, term.val()))
+                            .done(function(json) {
+                                self.notifyResult(json);
+                            });
+                    }
+                },
+                close: {
+                    type: 'red deny',
+                    caption: '<i class="times icon"></i>${_('Cancel')}'
+                }
+            });
+            dlg.find('select.dropdown').dropdown();
+            dlg.find('form').on('submit', function(e) {
+                e.preventDefault();
+                dlg.find('.approve').click();
+            });
+            $.ntdlg.show(dlg);
+        }
+    },
     sendAt: function() {
         const self = this;
         if ($.term) {
-            const termlist = function() {
-                const result = [];
-                for (let term in $.term.terms) {
-                    result.push($.util.template('<option value="%VALUE%">%LABEL%</option>',
-                        {VALUE: term, LABEL: term}));
-                }
-                return result.join('');
-            }
             const message =
-                '<form class="ui container form">' +
-                    '<div class="field">' +
-                        '<label>Select terminal:</label>' +
-                        '<select name="terminal" class="ui dropdown">' +
-                            termlist() +
-                        '</select>' +
-                    '</div>' +
-                    '<div class="field">' +
-                        '<label>${_('Command:')}</label>' +
-                        '<input type="text" name="command" value="">' +
-                    '</div>' +
-                    '<div class="field">' +
-                        '<label>${_('Feedback:')}</label>' +
-                        '<div class="ui segment feedback" style="height: 10rem; overflow-y: auto;"></div>' +
-                    '</div>' +
+                '<form class="ui container form">\\n' +
+                '  <div class="field">\\n' +
+                '    <label>Select terminal:</label>\\\n' +
+                '    <select name="terminal" class="ui dropdown">\\n' +
+                '      ' + self.termList() +
+                '    </select>' + '\\n' +
+                '  </div>\\n' +
+                '  <div class="field">\\n' +
+                '    <label>${_('Command:')}</label>\\n' +
+                '    <input type="text" name="command" value="">\\n' +
+                '  </div>\\n' +
+                '  <div class="field">\\n' +
+                '    <label>${_('Feedback:')}</label>\\n' +
+                '    <div class="ui segment feedback" style="height: 10rem; overflow-y: auto;"></div>\\n' +
+                '  </div>\\n' +
                 '</form>';
-            const dlg = $.ntdlg.dialog('sendatdlg', '${_('Send AT command')}', message, 'desktop icon', {
+            const dlg = $.ntdlg.dialog('send-at-dlg', '${_('Send AT command')}', message, 'desktop icon', {
                 send: {
                     type: 'green approve',
                     caption: '<i class="check icon"></i>${_('Send')}',
@@ -142,6 +197,10 @@ $.tasks = {
         $('.menu-about').on('click', function(e) {
             e.preventDefault();
             self.about();
+        });
+        $('.menu-stk').on('click', function(e) {
+            e.preventDefault();
+            self.stk();
         });
         $('.menu-sendat').on('click', function(e) {
             e.preventDefault();

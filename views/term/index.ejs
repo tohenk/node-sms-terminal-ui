@@ -21,6 +21,7 @@
 <%- include('term') -%>
 </div>
 <%_ } -%>
+<%- include('stkhandler') -%>
 <%_ script.create('JQuery')
   .useDependencies(['SocketIO'])
   .addMiddle(`
@@ -30,29 +31,34 @@ $.uiCon = {
     init: function() {
         const self = this;
         self.socket = io.connect(self.data.url, self.data.options);
-        self.socket.on('connect', function() {
-            self.connected = true;
-            console.log('Socket connected');
-        });
-        self.socket.on('disconnect', function() {
-            self.connected = false;
-            console.log('Socket disconnected');
-        });
-        self.socket.on('log', function(data) {
-            $.term.addLog(data.term, data);
-        });
-        self.socket.on('activity', function(data) {
-            $.log.add(data);
-        });
-        self.socket.on('client', function(type) {
-            $.client.load();
-        });
-        self.socket.on('new-activity', function(type) {
-            $.activity.load();
-        });
-        self.socket.on('new-terminal', function() {
-            window.location.reload();
-        });
+        self.socket
+            .on('connect', function() {
+                self.connected = true;
+                console.log('Socket connected');
+            })
+            .on('disconnect', function() {
+                self.connected = false;
+                console.log('Socket disconnected');
+            })
+            .on('log', function(data) {
+                $.term.addLog(data.term, data);
+            })
+            .on('activity', function(data) {
+                $.log.add(data);
+            })
+            .on('client', function(type) {
+                $.client.load();
+            })
+            .on('new-activity', function(type) {
+                $.activity.load();
+            })
+            .on('new-terminal', function() {
+                window.location.reload();
+            })
+            .on('stk', function(data) {
+                $.stk.handle(data);
+            })
+        ;
     }
 }
 `)

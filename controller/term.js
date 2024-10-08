@@ -116,6 +116,66 @@ class TermController extends Controller
                 next();
             }
         });
+        this.addRoute('stk', 'post', '/:term/stk', (req, res, next) => {
+            const result = {success: false};
+            if (req.params.term) {
+                const term = req.app.term;
+                const terminal = term.get(req.params.term);
+                if (terminal && terminal.stk) {
+                    const data = {};
+                    switch (req.query.cmd) {
+                        case 'show':
+                            terminal.stk.showApp(success => {
+                                result.success = success ? true : false;
+                                res.json(result);
+                            });
+                            break;
+                        case 'select-menu':
+                            ['mainmenu', 'submenu'].forEach(menu => {
+                                if (req.query[menu]) {
+                                    data[menu] = req.query[menu];
+                                }
+                            });
+                            terminal.stk.selectMenu(data, success => {
+                                result.success = success ? true : false;
+                                res.json(result);
+                            });
+                            break;
+                        case 'cancel-menu':
+                            ['mainmenu', 'submenu'].forEach(menu => {
+                                if (req.query[menu]) {
+                                    data[menu] = req.query[menu];
+                                }
+                            });
+                            terminal.stk.cancelMenu(data, success => {
+                                result.success = success ? true : false;
+                                res.json(result);
+                            });
+                            break;
+                        case 'send-response':
+                            const f = success => {
+                                if (typeof success === 'string') {
+                                    result.error = success;
+                                } else {
+                                    result.success = success ? true : false;
+                                }
+                                res.json(result);
+                            }
+                            if (req.query.inkey) {
+                                terminal.stk.sendInkey({MODE: req.query.MODE, INPUT: req.query.inkey}, f);
+                            }
+                            if (req.query.input) {
+                                terminal.stk.sendInput({MODE: req.query.MODE, INPUT: req.query.input}, f);
+                            }
+                            break;
+                    }
+                } else {
+                    res.json(result);
+                }
+            } else {
+                next();
+            }
+        });
     }
 
     getActivity(req, res, next) {

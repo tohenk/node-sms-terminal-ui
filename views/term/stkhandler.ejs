@@ -1,0 +1,114 @@
+<%_ script.create('JQuery')
+  .useDependencies(['JQuery/Util', 'SemanticUI/Notification', 'SemanticUI/Dialog/Confirm', 'SemanticUI/Dialog/Input'])
+  .addMiddle(`
+$.stk = {
+    notifyResult: function(result) {
+        if (result.error) {
+            $.notify(result.error, 'error');
+        } else if (result.success) {
+            $.notify('${_('Operation successfully submitted!')}', 'success');
+        } else {
+            $.notify('${_('Operation failed!')}', 'error');
+        }
+    },
+    showMenu: function(term, menu, menutype) {
+        const self = this;
+        const items = [];
+        menu.items.forEach(item => {
+            items.push($.util.template(
+                '    <div class="field">\\n' +
+                '      <div class="ui radio">\\n' +
+                '         <input type="radio" name="menu" tabindex="0" class="hidden" value="%ID%">\\n' +
+                '         <label>%TITLE%</label>\\n' +
+                '      </div>\\n' +
+                '    </div>', {ID: item.id, TITLE: item.title}
+            ));
+        });
+        const message =
+            '<form class="ui container form">\\n' +
+            '  <div class="grouped fields">\\n' +
+            '    <label for="menu">${_('Select menu:')}</label>\\n' +
+            '    ' + items.join('\\n') + '\\n' +
+            '  </div>\\n' +
+            '</form>';
+        const dlg = $.ntdlg.dialog('stk-menu-dlg', menu.title, message, 'desktop icon', {
+            send: {
+                type: 'green approve',
+                caption: '<i class="check icon"></i>${_('Ok')}',
+                handler: function() {
+                    const menu = dlg.find('input[name="menu"]:checked');
+                    if (menu.length === 0) {
+                        return false;
+                    }
+                    const url = '${route('Term', {name: 'stk', term: 'TERM', cmd: 'select-menu'})}'
+                        .replace(/TERM/, term) + \`&\${menutype}=\${menu.val()}\`;
+                    $.post(url)
+                        .done(function(json) {
+                            self.notifyResult(json);
+                        });
+                }
+            },
+            close: {
+                type: 'red deny',
+                caption: '<i class="times icon"></i>${_('Cancel')}',
+                handler: function() {
+                    $.post('${route('Term', {name: 'stk', term: 'TERM', cmd: 'cancel-menu'})}'
+                        .replace(/TERM/, term) + \`&\${menutype}=1\`)
+                        .done(function(json) {
+                            self.notifyResult(json);
+                        });
+                }
+            }
+        });
+        dlg.find('.ui.radio.checkbox').checkbox();
+        dlg.find('form').on('submit', function(e) {
+            e.preventDefault();
+            dlg.find('.approve').click();
+        });
+        $.ntdlg.show(dlg);
+    },
+    showInput: function(term, type, data) {
+        const self = this;
+        if (data.MODE && data.TXT) {
+            const f = res => {
+                $.post('${route('Term', {name: 'stk', term: 'TERM', cmd: 'send-response'})}'
+                    .replace(/TERM/, term) + \`&mode=\${data.MODE}&\${type}=\${res}\`)
+                    .done(function(json) {
+                        self.notifyResult(json);
+                    });
+            }
+            if (data.MODE === 'YESNO') {
+                $.ntdlg.confirm('stk-confirm-dlg', '${_('Confirmation')}', data.TXT, () => f('y'), () => f('n'));
+            } else {
+                $.ntdlg.input('stk-confirm-dlg', '${_('Input')}', data.TXT, '', value => f(value));
+            }
+        }
+    },
+    showMessage: function(term, message) {
+        $.notify(message, 'info');
+    },
+    handle: function(stk) {
+        const self = this;
+        if (stk.data.mainmenu) {
+            self.showMenu(stk.term, stk.data.mainmenu, 'mainmenu');
+        }
+        if (stk.data.submenu) {
+            self.showMenu(stk.term, stk.data.submenu, 'submenu');
+        }
+        if (stk.data.message) {
+            self.showMessage(stk.term, stk.data.message);
+        }
+        if (stk.data.inkey) {
+            self.showInput(stk.term, 'inkey', stk.data.inkey);
+        }
+        if (stk.data.input) {
+            self.showInput(stk.term, 'input', stk.data.input);
+        }
+        if (stk.data.reset) {
+            $.ntdlg.close('stk-menu-dlg');
+            $.ntdlg.close('stk-confirm-dlg');
+            $.ntdlg.close('stk-input-dlg');
+        }
+    }
+}
+`) -%>
