@@ -2,7 +2,7 @@
   .useDependencies(['JQuery/Util', 'SemanticUI/Notification', 'SemanticUI/Dialog/Confirm', 'SemanticUI/Dialog/Input'])
   .addMiddle(`
 $.stk = {
-    notifyResult: function(result) {
+    notifyResult(result) {
         if (result.error) {
             $.notify(result.error, 'error');
         } else if (result.success) {
@@ -11,7 +11,7 @@ $.stk = {
             $.notify('${_('Operation failed!')}', 'error');
         }
     },
-    showMenu: function(term, menu, menutype) {
+    showMenu(term, menu, menutype) {
         const self = this;
         const items = [];
         menu.items.forEach(item => {
@@ -35,7 +35,7 @@ $.stk = {
             send: {
                 type: 'green approve',
                 caption: '<i class="check icon"></i>${_('Ok')}',
-                handler: function() {
+                handler() {
                     const menu = dlg.find('input[name="menu"]:checked');
                     if (menu.length === 0) {
                         return false;
@@ -51,7 +51,7 @@ $.stk = {
             close: {
                 type: 'red deny',
                 caption: '<i class="times icon"></i>${_('Cancel')}',
-                handler: function() {
+                handler() {
                     $.post('${route('Term', {name: 'stk', term: 'TERM', cmd: 'cancel-menu'})}'
                         .replace(/TERM/, term) + \`&\${menutype}=1\`)
                         .done(function(json) {
@@ -67,7 +67,7 @@ $.stk = {
         });
         $.ntdlg.show(dlg);
     },
-    showInput: function(term, type, data) {
+    showInput(term, type, data) {
         const self = this;
         if (data.MODE && data.TXT) {
             const f = res => {
@@ -84,10 +84,10 @@ $.stk = {
             }
         }
     },
-    showMessage: function(term, message) {
+    showMessage(term, message) {
         $.notify(message, 'info');
     },
-    handle: function(stk) {
+    handle(stk) {
         const self = this;
         if (stk.data.mainmenu) {
             self.showMenu(stk.term, stk.data.mainmenu, 'mainmenu');

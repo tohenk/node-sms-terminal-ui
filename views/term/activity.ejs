@@ -17,7 +17,7 @@
   .addMiddle(`
 $.activity = $.loader($('div[data-tab="activity"] table'), {
     url: '${route('Term', {name: 'activity-page', page: 'PAGE'})}',
-    formatRow: function(item) {
+    formatRow(item) {
         return $('<tr><td>' + item.nr + '</td>' +
             '<td>' + item.time + '</td>' +
             '<td>' + item.hash.substr(0, 8) + '</td>' +

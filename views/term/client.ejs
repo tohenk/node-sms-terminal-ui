@@ -13,14 +13,14 @@
   .addMiddle(`
 $.client = $.loader($('div[data-tab="client"] table'), {
     url: '${route('Term', {name: 'client'})}',
-    formatRow: function(item) {
+    formatRow(item) {
         return $('<tr><td>' + item.nr + '</td>' +
             '<td>' + item.id + '</td>' +
             '<td>' + item.address + '</td>' +
             '<td>' + (item.time ? item.time : 'n/a') + '</td>' +
             '</tr>');
     },
-    loaded: function(json) {
+    loaded(json) {
         $('a[data-tab="client"] span.label').text(json.items.length);
     }
 });

@@ -2,7 +2,7 @@
   .addMiddle(`
 $.term = {
     terms: {},
-    getLog: function(name) {
+    getLog(name) {
         const self = this;
         $.get('${route('Term', {name: 'log', term: 'TERM'})}'.replace(/TERM/, name))
             .done(function(json) {
@@ -13,7 +13,7 @@ $.term = {
                 }
             });
     },
-    addLog: function(name, data) {
+    addLog(name, data) {
         const self = this;
         if (data.time >= self.terms[name].time) {
             const log = $(self.terms[name].log);
@@ -25,7 +25,7 @@ $.term = {
             }
         }
     },
-    init: function(ports) {
+    init(ports) {
         const self = this;
         for (let i = 0; i < ports.length; i++) {
             const port = ports[i];
