@@ -1,12 +1,12 @@
 <div class="ui stackable top attached tabular menu">
-  <a class="active item" data-tab="activity"><%= _('Activity') %></a>
+  <a class="item" data-tab="activity"><%= _('Activity') %></a>
   <a class="item" data-tab="log"><%= _('Logs') %></a>
   <a class="item" data-tab="client"><%= _('Clients') %> <span class="ui tiny label">0</span></a>
   <%_ if ((terms = term.getTerminals(true)) && terms.length) { -%>
   <a class="item" data-tab="port"><%= _('Ports') %> <span class="ui tiny label"><%= terms.length %></span></a>
   <%_ } -%>
 </div>
-<div class="ui bottom attached active tab segment" data-tab="activity">
+<div class="ui bottom attached tab segment" data-tab="activity">
 <%- include('activity') -%>
 </div>
 <div class="ui bottom attached tab segment" data-tab="log">
@@ -63,6 +63,11 @@ $.uiCon = {
 }
 `)
   .addLast(`
-$('.menu .item').tab();
+$('.menu .item').tab({
+    autoTabActivation: window.location.hash ? window.location.hash.substr(1) : true,
+    onLoad(path, params, history) {
+        window.location.hash = path;
+    }
+});
 $.uiCon.init();
 `) -%>
