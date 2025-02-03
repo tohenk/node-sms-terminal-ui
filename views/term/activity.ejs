@@ -24,7 +24,7 @@ $.activity = $.loader($('div[data-tab="activity"] table'), {
             '<td class="ui center aligned">' + this.icon(item.type) + '</td>' +
             '<td>' + (item.address ? item.address : '') +
                 (item.origin ? '<div><div class="ui mini grey label"><i class="phone icon"></i>' + item.origin + '</div></div>' : '') + '</td>' +
-            '<td>' + (item.data ? item.data : '') + '</td>' +
+            '<td>' + $.hidePayload(item.data) + '</td>' +
             '<td>' + this.formatStatus(item.status) + '</td>' +
             '</tr>');
     }
