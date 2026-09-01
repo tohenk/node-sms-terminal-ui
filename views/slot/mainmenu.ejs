@@ -38,7 +38,7 @@
 <%- menu(menus, {mainmenu: true, indentation: 2}) %>
 <%_ script.create('JQuery')
   .useDependencies(['JQuery/Util', 'SemanticUI/Notification', 'SemanticUI/Dialog', 'SemanticUI/Dialog/Message'])
-  .addMiddle(`
+  .add(`
 $.tasks = {
     about() {
         const self = this;
@@ -208,6 +208,6 @@ $.tasks = {
         });
     }
 }
-`).addLast(`
+`).addInitializer(`
 $.tasks.init();
 `) -%>

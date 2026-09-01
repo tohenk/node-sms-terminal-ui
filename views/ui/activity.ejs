@@ -14,9 +14,9 @@
 </table>
 <%_ script.create('JQuery')
   .useDependencies('SemanticUI/Loader')
-  .addMiddle(`
+  .add(`
 $.activity = $.loader($('div[data-tab="activity"] table'), {
-    url: '${route('Term', {name: 'activity-page', page: 'PAGE'})}',
+    url: '${route('Ui', {name: 'activity-page', page: 'PAGE'})}',
     formatRow(item) {
         return $('<tr><td>' + item.nr + '</td>' +
             '<td>' + item.time + '</td>' +
@@ -38,6 +38,6 @@ $.activity.formatStatus = function(status) {
     }
 }
 `)
-  .addLast(`
+  .addInitializer(`
 $.activity.load();
 `) -%>

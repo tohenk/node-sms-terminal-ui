@@ -1,6 +1,6 @@
 <%_ script.create('JQuery')
   .useDependencies(['JQuery/Util', 'SemanticUI/Notification', 'SemanticUI/Dialog/Confirm', 'SemanticUI/Dialog/Input'])
-  .addMiddle(`
+  .add(`
 $.stk = {
     notifyResult(result) {
         if (result.error) {
@@ -40,7 +40,7 @@ $.stk = {
                     if (menu.length === 0) {
                         return false;
                     }
-                    const url = '${route('Term', {name: 'stk', term: 'TERM', cmd: 'select-menu'})}'
+                    const url = '${route('Ui', {name: 'stk', term: 'TERM', cmd: 'select-menu'})}'
                         .replace(/TERM/, term) + \`&\${menutype}=\${menu.val()}\`;
                     $.post(url)
                         .done(function(json) {
@@ -52,7 +52,7 @@ $.stk = {
                 type: 'red deny',
                 caption: '<i class="times icon"></i>${_('Cancel')}',
                 handler() {
-                    $.post('${route('Term', {name: 'stk', term: 'TERM', cmd: 'cancel-menu'})}'
+                    $.post('${route('Ui', {name: 'stk', term: 'TERM', cmd: 'cancel-menu'})}'
                         .replace(/TERM/, term) + \`&\${menutype}=1\`)
                         .done(function(json) {
                             self.notifyResult(json);
@@ -71,7 +71,7 @@ $.stk = {
         const self = this;
         if (data.MODE && data.TXT) {
             const f = res => {
-                $.post('${route('Term', {name: 'stk', term: 'TERM', cmd: 'send-response'})}'
+                $.post('${route('Ui', {name: 'stk', term: 'TERM', cmd: 'send-response'})}'
                     .replace(/TERM/, term) + \`&mode=\${data.MODE}&\${type}=\${res}\`)
                     .done(function(json) {
                         self.notifyResult(json);

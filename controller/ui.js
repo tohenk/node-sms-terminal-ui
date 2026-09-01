@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2018-2025 Toha <tohenk@yahoo.com>
+ * Copyright (c) 2018-2026 Toha <tohenk@yahoo.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -28,15 +28,15 @@ const moment = require('moment');
 const Controller = require('@ntlab/express-controller');
 const Express = require('express').application;
 
-class TermController extends Controller
-{
+class UiController extends Controller {
+
     buildRoutes() {
         this.addRoute('index', 'get', '/', async (req, res, next) => {
             const socketOptions = {reconnection: true};
             if (req.app.get('root') !== '/') {
                 socketOptions.path = req.getPath('/socket.io/');
             }
-            res.render('term/index', {
+            res.render('ui/index', {
                 socket: {
                     url: req.getUri({path: '/ui', noproto: true}),
                     options: socketOptions
@@ -241,13 +241,13 @@ class TermController extends Controller
      *
      * @param {Express} app Express app
      * @param {string} prefix Path prefix 
-     * @returns {TermController}
+     * @returns {UiController}
      */
     static create(app, prefix = '/') {
-        const controller = new TermController({prefix: prefix, name: 'Term'});
+        const controller = new UiController({prefix, name: 'Ui'});
         app.use(prefix, controller.router);
         return controller;
     }
 }
 
-module.exports = TermController.create;
+module.exports = UiController.create;
