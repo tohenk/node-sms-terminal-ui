@@ -56,7 +56,7 @@ $.tasks = {
             $.ntdlg.message('task-about', '${_('About')}', msg, $.ntdlg.ICON_INFO);
         }
         if (!self.aboutInfo) {
-            $.get('${route('Term', {name: 'about'})}')
+            $.get('${route('Ui', {name: 'about'})}')
                 .done(function(json) {
                     self.aboutInfo = json;
                     f();
@@ -104,7 +104,7 @@ $.tasks = {
                             term.focus();
                             return false;
                         }
-                        $.post('${route('Term', {name: 'stk', term: 'TERM', cmd: 'show'})}'.replace(/TERM/, term.val()))
+                        $.post('${route('Ui', {name: 'stk', term: 'TERM', cmd: 'show'})}'.replace(/TERM/, term.val()))
                             .done(function(json) {
                                 self.notifyResult(json);
                             });
@@ -158,7 +158,7 @@ $.tasks = {
                             cmd.focus();
                             return false;
                         }
-                        $.post('${route('Term', {name: 'at', term: 'TERM'})}'.replace(/TERM/, term.val()), {command: cmd.val()})
+                        $.post('${route('Ui', {name: 'at', term: 'TERM'})}'.replace(/TERM/, term.val()), {command: cmd.val()})
                             .done(function(json) {
                                 const responses = [];
                                 responses.push($.util.template('%TERM%&gt; <strong>%CMD%</strong> <i class="%ICON% icon"></i>', {
